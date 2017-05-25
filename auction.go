@@ -1,5 +1,7 @@
 package main
 
+import "github.com/kr/pretty"
+
 type AuctionLocation struct {
 	Files []struct {
 		URL string `json:"url"`
@@ -37,6 +39,25 @@ type Auction struct {
 			BonusListID int `json:"bonusListId"`
 		} `json:"bonusLists,omitempty"`
 	} `json:"auctions"`
+}
+
+func FetchLatestAuctionData(apiKey string, realm string) *Auction {
+
+	auctionUrl := BuildAuctionLocationQueryString(EN_US_LOCALE, apiKey, realm)
+
+	locationUrl := new(AuctionLocation)
+
+	GetAuctionLocationRequest(auctionUrl, locationUrl)
+
+	println(locationUrl.Files[0].URL)
+
+	auction := new(Auction)
+
+	GetAuctionRequest(locationUrl.Files[0].URL, auction)
+
+	//pretty.Print(auction)
+	pretty.Printf("\nGot latest auction data from %v\n", locationUrl.Files[0].LastModified)
+	return auction
 }
 
 

@@ -1,5 +1,12 @@
 package main
 
+import (
+	//"log"
+	"github.com/kr/pretty"
+
+
+)
+
 // Items for each unique item sold on the auction house. Each has a unique ID enforced by the Blizzard API.
 type Item struct {
 	ID int `json:"id"`
@@ -61,4 +68,15 @@ type Item struct {
 		BonusChances []interface{} `json:"bonusChances"`
 	} `json:"bonusSummary"`
 	ArtifactID int `json:"artifactId"`
+}
+
+func GetItemById(apiKey string, id string) *Item {
+
+	requestUrl := BuildItemQueryString(EN_US_LOCALE, apiKey, id)
+
+	item := new(Item)
+	GetItemRequest(requestUrl, item)
+	pretty.Printf("Got item id: %v, %v", item.ID, item.Name)
+	pretty.Println(item)
+	return item
 }

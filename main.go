@@ -2,6 +2,10 @@ package main
 
 import (
 	"flag"
+	//"fmt"
+	"github.com/kr/pretty"
+
+	"strconv"
 )
 const (
 	BASE_URL = "https://us.api.battle.net/wow"
@@ -14,34 +18,40 @@ const (
 func main() {
 
 	// Read api key from cli
-	apiKey := flag.String("a", "00000000", "-a <key>")
+	apiKey := flag.String("a", "", "-a <key>")
+	itemId := flag.String("i", "", "-i <item id>")
+	realm := flag.String("r","","-r <realm_name>")
 
 	flag.Parse()
 
-	// Call the item API
-
-	requestUrl := BuildItemQueryString(EN_US_LOCALE, *apiKey, "18802")
-
-	item := new(Item)
-	GetItemRequest(requestUrl, item)
-
-	println(len(item.ItemSpells))
-
-	auctionUrl := BuildAuctionLocationQueryString(EN_US_LOCALE, *apiKey, "Emerald Dream")
-
-	locationUrl := new(AuctionLocation)
-
-	GetAuctionLocationRequest(auctionUrl, locationUrl)
-
-	println(locationUrl.Files[0].URL)
-
-	auction := new(Auction)
-
-	GetAuctionRequest(locationUrl.Files[0].URL, auction)
-
-	for index,auc := range auction.Auctions {
-		println(index,auc.Item)
+	if *apiKey == "" {
+		pretty.Print("Please provide an apikey using -a")
 	}
+
+	pretty.Printf("api key: %v\n", *apiKey)
+	pretty.Printf("item id: %v\n", *itemId)
+	pretty.Printf("realm: %v\n", *realm)
+	//if itemId != nil {
+	//	_ = GetItemById(*apiKey, *itemId)
+	//}
+
+	if *realm != "" && *realm != "" {
+		auc := FetchLatestAuctionData(*apiKey, *realm)
+
+		// NOTE: API limit is 100/second
+		items := make([]Item, 10)
+		for i := 0; i < 5; i++ {
+			items = append(items, *(GetItemById(*apiKey, strconv.Itoa(auc.Auctions[i].Item))))
+		}
+
+		pretty.Print(items)
+	}
+
+
+
+	
+
+
 
 
 }
