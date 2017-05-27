@@ -24,7 +24,7 @@ func BuildItemQueryString(locale string, apiKey string, id string) string {
 
 	url.URL.RawQuery = query.Encode()
 
-	println(url.URL.String())
+	//println(url.URL.String())
 
 	return url.URL.String()
 }

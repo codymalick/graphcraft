@@ -2,7 +2,7 @@ package main
 
 import (
 	//"log"
-	"github.com/kr/pretty"
+	//"github.com/kr/pretty"
 
 
 )
@@ -71,12 +71,8 @@ type Item struct {
 }
 
 func GetItemById(apiKey string, id string) *Item {
-
 	requestUrl := BuildItemQueryString(EN_US_LOCALE, apiKey, id)
-
 	item := new(Item)
 	GetItemRequest(requestUrl, item)
-	pretty.Printf("Got item id: %v, %v", item.ID, item.Name)
-	pretty.Println(item)
 	return item
 }
