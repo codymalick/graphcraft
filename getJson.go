@@ -6,12 +6,21 @@ import (
 	"log"
 	"os"
 	"encoding/json"
+	"strconv"
+)
+
+const (
+	BASE_URL = "https://us.api.battle.net/wow"
+	AUCTION_URL = "/auction/"
+	ITEM_URL = "/item/"
+	EN_US_LOCALE = "en_US"
+	DATA = "/data/"
 )
 
 // Calls the Blizzard community API to get periodic data dumps.
 
-func BuildItemQueryString(locale string, apiKey string, id string) string {
-	url, err := http.NewRequest("GET", BASE_URL + ITEM_URL + id, nil)
+func BuildItemQueryString(locale string, apiKey string, id int) string {
+	url, err := http.NewRequest("GET", BASE_URL + ITEM_URL + strconv.Itoa(id), nil)
 	if err != nil {
 		log.Print(err)
 		os.Exit(1)

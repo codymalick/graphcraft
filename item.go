@@ -1,9 +1,6 @@
 package main
 
 import (
-	//"log"
-	//"github.com/kr/pretty"
-
 
 )
 
@@ -70,7 +67,7 @@ type Item struct {
 	ArtifactID int `json:"artifactId"`
 }
 
-func GetItemById(apiKey string, id string) *Item {
+func GetItemById(apiKey string, id int) *Item {
 	requestUrl := BuildItemQueryString(EN_US_LOCALE, apiKey, id)
 	item := new(Item)
 	GetItemRequest(requestUrl, item)
