@@ -42,39 +42,32 @@ func main() {
 
 	// Get single item data
 	if *itemId != 0 {
-		// Query our own db first for previously searched items, otherwise query api
-		item := QueryItem(*itemId)
-
-		if item.ID != 0 {
-			pretty.Printf("Found cached result, id: %v, name: %v\n",item.ID, item.Name)
-		} else {
-			item = GetItemById(*apiKey, *itemId)
-			err := InsertItem(item)
-
-			checkErr(err)
-		}
-
-
+		item := GetItemById(*apiKey,*itemId)
+		pretty.Println(item)
 	}
 
 	// Get realm data
 	if *realm != "" {
 		auc := FetchLatestAuctionData(*apiKey, *realm)
-		popular := MostPopularAuctions(auc)
 
-		// NOTE: API limit is 100/second
-		i := 0
-
-		for _,v := range popular {
-			pretty.Printf("id:%v count:%v\n", v.id , v.count)
-			i++
-			item := GetItemById(*apiKey, v.id)
-			pretty.Printf("%v\n",item.Name)
-
-			if i >= 20 {
-				break
-			}
-		}
+		StoreAuctionData(auc, *realm, *apiKey)
+		// cache the data
+		//
+		//popular := MostPopularAuctions(auc)
+		//
+		//// NOTE: API limit is 100/second
+		//i := 0
+		//
+		//for _,v := range popular {
+		//	pretty.Printf("id:%v count:%v\n", v.id , v.count)
+		//	i++
+		//	item := GetItemByIdApi(*apiKey, v.id)
+		//	pretty.Printf("%v\n",item.Name)
+		//
+		//	if i >= 20 {
+		//		break
+		//	}
+		//}
 
 	}
 

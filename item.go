@@ -1,9 +1,5 @@
 package main
 
-import (
-
-)
-
 // Items for each unique item sold on the auction house. Each has a unique ID enforced by the Blizzard API.
 type Item struct {
 	ID int `json:"id"`
@@ -67,9 +63,31 @@ type Item struct {
 	ArtifactID int `json:"artifactId"`
 }
 
-func GetItemById(apiKey string, id int) *Item {
+func GetItemByIdApi(apiKey string, id int) *Item {
 	requestUrl := BuildItemQueryString(EN_US_LOCALE, apiKey, id)
 	item := new(Item)
 	GetItemRequest(requestUrl, item)
 	return item
+}
+
+func GetItemById(apiKey string, id int) *Item {
+	// Query our own db first for previously searched items, otherwise query api
+	item := QueryItem(id)
+
+	if item != nil {
+		//pretty.Printf("Found cached result, id: %v, name: %v\n",item.ID, item.Name)
+		return item
+	} else {
+		item = GetItemByIdApi(apiKey, id)
+
+		// catch the nil result before making another db connection
+		if item.ID == 0 {
+			//pretty.Printf("Invalid item, id == 0\n")
+			return nil
+		}
+		
+		err := InsertItem(item)
+		checkErr(err)
+		return item
+	}
 }
